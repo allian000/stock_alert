@@ -18,12 +18,24 @@ double StockPriceMonitor::getPrice(const string &stock_code) const {
 }
 
 void StockPriceMonitor::updatePrice() {
+    bool price_changed = false;
+    string message = "Stock prices updated: ";
+
     for (auto &item : this->stock_map) {
-        this->stock_map[item.first] += ((rand() % 200) - 100) / 100.0;
+        double old_price = item.second;
+        double price_change = ((rand() % 200) - 100) / 100.0;
+        double new_price = old_price + price_change;
+        
+        if (new_price != old_price) {
+            price_changed = true;
+            item.second = new_price;
+            message += item.first + " -> " + to_string(new_price) + " | ";
+        }
     }
 
-    // TODO: 這裡應該要比較價格是否有變動再決定是否通知
-    notify("Stock prices updated!");
+    if (price_changed) {
+        notify(message);
+    }
 }
 
 void StockPriceMonitor::subscribe(shared_ptr<Observer> observer) {
