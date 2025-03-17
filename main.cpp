@@ -1,24 +1,26 @@
 #include <iostream>
 #include "stockPriceMonitor.h"
+#include "stockAlertManager.h"
 
 using namespace std;
 
 int main(){
-    auto stockPriceMonitor = make_shared<StockPriceMonitor>();
-    auto user1 = make_shared<ConcreteObserver>("Alice");
-    auto user2 = make_shared<ConcreteObserver>("Bob");
+    srand(time(0));
+    
+    shared_ptr<StockPriceMonitor> monitor = make_shared<StockPriceMonitor>();
+    shared_ptr<StockAlertManager> alertManager = make_shared<StockAlertManager>(monitor);
 
-    stockPriceMonitor->subscribe(user1);
-    stockPriceMonitor->subscribe(user2);
+    monitor->subscribe(alertManager);
 
-    cout << "Send message: Hello World!" << endl;
-    stockPriceMonitor->notify("Hello World!");
+    alertManager->addAlert("Alice", "AAPL",150.5);
+    alertManager->addAlert("Bob", "TSLA", 789.5);
+    alertManager->addAlert("Alice", "GOOGLE", 2806.0);
 
-    cout << "User: "  << user1->getName() << " unsubscribe!" << endl;
-    stockPriceMonitor->unsubscribe(user1);
+    for (int i = 0; i < 5; i++) {
+        cout << "\n=== Update " << i + 1 << " ===\n";
+        monitor->updatePrice();
+    }
 
-    cout << "Send message: Second message!" << endl;
-    stockPriceMonitor->notify("Second message!");
 
     return 0;
 }

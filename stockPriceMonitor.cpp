@@ -8,9 +8,9 @@ StockPriceMonitor::StockPriceMonitor() {
         {"TSLA", 789.10}};
 }
 
-double StockPriceMonitor::getPrice(const string &stock_code) {
+double StockPriceMonitor::getPrice(const string &stock_code) const {
     if (this->stock_map.find(stock_code) != this->stock_map.end()) {
-        return this->stock_map[stock_code];
+        return this->stock_map.at(stock_code);
     } else {
         cerr << "Stock " << stock_code << " not found!" << endl;
         return -1.0;
@@ -21,6 +21,9 @@ void StockPriceMonitor::updatePrice() {
     for (auto &item : this->stock_map) {
         this->stock_map[item.first] += ((rand() % 200) - 100) / 100.0;
     }
+
+    // TODO: 這裡應該要比較價格是否有變動再決定是否通知
+    notify("Stock prices updated!");
 }
 
 void StockPriceMonitor::subscribe(shared_ptr<Observer> observer) {

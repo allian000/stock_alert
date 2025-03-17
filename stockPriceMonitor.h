@@ -22,7 +22,7 @@ class StockPriceMonitor {
     public:
         StockPriceMonitor();
         
-        double getPrice(const string &stock_code);
+        double getPrice(const string &stock_code) const;
         
         void updatePrice();
 
